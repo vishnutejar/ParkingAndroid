@@ -2,14 +2,14 @@
 
 buildscript {
     repositories {
-        // Use Google's Maven repository instead of jcenter for Google Services plugin
+        // Use Google's Maven repository for Google Services plugin
         google()
-        jcenter()
+        mavenCentral() // Use Maven Central instead of jcenter
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.5.0'
         // Update to the latest version of Google Services plugin
-        classpath 'com.google.gms:google-services:4.3.3' // Replace with the latest version
+        classpath 'com.google.gms:google-services:4.3.14' // Replace with the latest version
     }
 }
 
@@ -17,7 +17,7 @@ allprojects {
     repositories {
         // Use Google's Maven repository for all projects
         google()
-        jcenter()
+        mavenCentral() // Use Maven Central instead of jcenter
     }
 }
 
