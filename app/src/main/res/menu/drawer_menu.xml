@@ -1,0 +1,26 @@
+<!-- res/menu/drawer_menu.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_profile"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_feedback"
+            android:title="Feedback" />
+        <item
+            android:id="@+id/nav_change_password"
+            android:title="Change Password" />
+        <item
+            android:id="@+id/nav_find_parking"
+            android:title="Find Parking" />
+        <item
+            android:id="@+id/nav_recommended_parking"
+            android:title="Recommended Parking" />
+        <item
+            android:id="@+id/nav_old_reservations"
+            android:title="Old Reservations" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Logout" />
+    </group>
+</menu>

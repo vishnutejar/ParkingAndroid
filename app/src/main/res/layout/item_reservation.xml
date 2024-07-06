@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/reservation_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reservation ID"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/user_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User ID"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/parking_slot_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Parking Slot ID"
+        android:textSize="16sp" />
+
+    <!-- Add other TextViews if needed -->
+</LinearLayout>

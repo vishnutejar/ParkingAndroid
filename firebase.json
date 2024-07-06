@@ -1,0 +1,30 @@
+{
+  "ParkingSlots": {
+    "slot1": {
+      "Name": "Parking Lot A",
+      "Status": "Available",
+      "Latitude": 37.7749,
+      "Longitude": -122.4194,
+      "Prices": {
+        "1_hour": 3,
+        "5_hours": 10,
+        "1_day": 20,
+        "1_week": 100,
+        "1_year": 1000
+      }
+    },
+    "slot2": {
+      "Name": "Parking Lot B",
+      "Status": "Occupied",
+      "Latitude": 37.7849,
+      "Longitude": -122.4094,
+      "Prices": {
+        "1_hour": 2,
+        "5_hours": 8,
+        "1_day": 18,
+        "1_week": 90,
+        "1_year": 950
+      }
+    }
+  }
+}

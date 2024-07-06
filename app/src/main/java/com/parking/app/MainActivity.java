@@ -1,54 +1,89 @@
 package com.parking.app;
 
-import android.os.Bundle;
-
-import android.view.View;
 import android.content.Intent;
-//import android.support.v7.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatActivity;
-import android.widget.Button;
+import android.os.Bundle;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-//import missing.namespace.R;
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-public class MainActivity extends AppCompatActivity {
+    private FirebaseUser currentUser;
+    private FirebaseAuth mAuth;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
+    private Toolbar toolbar;
 
-    FirebaseUser currentUser;//used to store current user of account
-    FirebaseAuth mAuth;//Used for firebase authentication
-    Button logout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        logout = (Button)findViewById(R.id.logout);
-        //To logout from the application
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                //After logging out send user to Login Activity to login again
-                sendToLoginActivity();
-            }
-        });
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //Check if user has already signed in if not send user to Login Activity
-        if(currentUser==null)
-        {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        if (currentUser == null) {
             sendToLoginActivity();
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_profile) {
+            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+        } else if (id == R.id.nav_feedback) {
+            startActivity(new Intent(MainActivity.this, FeedbackActivity.class));
+        } else if (id == R.id.nav_change_password) {
+            startActivity(new Intent(MainActivity.this, ChangePasswordActivity.class));
+        } else if (id == R.id.nav_find_parking) {
+            startActivity(new Intent(MainActivity.this, FindParkingActivity.class));
+        } else if (id == R.id.nav_recommended_parking) {
+            startActivity(new Intent(MainActivity.this, RecommendedParkingActivity.class));
+        } else if (id == R.id.nav_old_reservations) {
+            startActivity(new Intent(MainActivity.this, OldReservationsActivity.class));
+        } else if (id == R.id.nav_logout) {
+            FirebaseAuth.getInstance().signOut();
+            sendToLoginActivity();
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
     private void sendToLoginActivity() {
-        //To send user to Login Activity
-        Intent loginIntent = new Intent(MainActivity.this,LoginActivity.class);
+        Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(loginIntent);
+        finish();  // Optional: Finish the current activity to prevent going back to it when pressing back button
     }
 }

@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">ParkingApp</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="profile">Profile</string>
+    <string name="feedback">Feedback</string>
+    <string name="change_password">Change Password</string>
+    <string name="find_parking">Find Parking</string>
+    <string name="recommended_parking">Recommended Parking</string>
+    <string name="old_reservations">Old Reservations</string>
+    <string name="logout">Logout</string>
+    <string name="feedback_hint">Enter your feedback</string>
+    <string name="submit_feedback">Submit</string>
+    <string name="feedback_icon">Feedback Icon</string>
+    <string name="google_maps_key">AIzaSyCIKPwixFT_3JXzp9KZEo_GCdfE_JkhdXU</string>
 </resources>

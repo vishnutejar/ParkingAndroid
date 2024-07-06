@@ -1,0 +1,756 @@
+{
+  "MainPages": {
+    "Profile": {
+      "UserID": "",
+      "Name": "",
+      "Email": "",
+      "Phone": "",
+      "Address": "",
+      "RegistrationDate": ""
+    },
+    "Feedback": {
+      "UserID": "",
+      "Comments": "",
+      "Rating": 0,
+      "Date": ""
+    },
+    "ChangePassword": {
+      "UserID": "",
+      "OldPassword": "",
+      "NewPassword": ""
+    },
+    "Pages": {
+      "FindFreeParking": {
+        "Description": "Search for free parking slots in the region using address or map",
+        "SearchByAddress": "",
+        "Map": {
+          "Region": "Bulgaria",
+          "ParkingSlots": ["slot1", "slot2", "slot3", "slot4", "slot5", "slot6", "slot7", "slot8", "slot9", "slot10", "slot11", "slot12", "slot13", "slot14", "slot15", "slot16", "slot17", "slot18", "slot19", "slot20", "slot21", "slot22", "slot23", "slot24", "slot25", "slot26", "slot27", "slot28", "slot29", "slot30"]
+        }
+      },
+      "RecommendedParking": {
+        "Description": "Shows recommended parking in the region based on user rankings",
+        "RecommendedParkings": ["slot3", "slot5", "slot7"]
+      },
+      "OldReservations": {
+        "Description": "Displays old parking reservations made by the user",
+        "Reservations": [
+          {
+            "ReservationID": "",
+            "ParkingName": "Parking Lot A",
+            "ReservationDate": "",
+            "Duration": "",
+            "TotalPrice": 0,
+            "Status": "Completed"
+          }
+        ]
+      }
+    }
+  },
+  "ParkingSlots": {
+    "slot1": {
+      "Name": "Parking Lot A",
+      "City": "Sofia",
+      "Status": "Available",
+      "Latitude": 42.6977,
+      "Longitude": 23.3219,
+      "Prices": {
+        "1_hour": 3,
+        "5_hours": 10,
+        "1_day": 20,
+        "1_week": 100,
+        "1_year": 1000
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot2": {
+      "Name": "Parking Lot B",
+      "City": "Sofia",
+      "Status": "Occupied",
+      "Latitude": 42.6942,
+      "Longitude": 23.3326,
+      "Prices": {
+        "1_hour": 2,
+        "5_hours": 8,
+        "1_day": 18,
+        "1_week": 90,
+        "1_year": 950
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot3": {
+      "Name": "Parking Lot C",
+      "City": "Plovdiv",
+      "Status": "Available",
+      "Latitude": 42.1354,
+      "Longitude": 24.7453,
+      "Prices": {
+        "1_hour": 4,
+        "5_hours": 12,
+        "1_day": 25,
+        "1_week": 110,
+        "1_year": 1050
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot4": {
+      "Name": "Parking Lot D",
+      "City": "Varna",
+      "Status": "Available",
+      "Latitude": 43.2141,
+      "Longitude": 27.9147,
+      "Prices": {
+        "1_hour": 3.5,
+        "5_hours": 11,
+        "1_day": 22,
+        "1_week": 105,
+        "1_year": 1020
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot5": {
+      "Name": "Parking Lot E",
+      "City": "Burgas",
+      "Status": "Available",
+      "Latitude": 42.5048,
+      "Longitude": 27.4626,
+      "Prices": {
+        "1_hour": 4,
+        "5_hours": 13,
+        "1_day": 26,
+        "1_week": 115,
+        "1_year": 1080
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot6": {
+      "Name": "Parking Lot F",
+      "City": "Ruse",
+      "Status": "Available",
+      "Latitude": 43.8356,
+      "Longitude": 25.9657,
+      "Prices": {
+        "1_hour": 3,
+        "5_hours": 9,
+        "1_day": 19,
+        "1_week": 95,
+        "1_year": 970
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot7": {
+      "Name": "Parking Lot G",
+      "City": "Stara Zagora",
+      "Status": "Occupied",
+      "Latitude": 42.4258,
+      "Longitude": 25.6345,
+      "Prices": {
+        "1_hour": 2.5,
+        "5_hours": 9,
+        "1_day": 18,
+        "1_week": 90,
+        "1_year": 950
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot8": {
+      "Name": "Parking Lot H",
+      "City": "Pleven",
+      "Status": "Available",
+      "Latitude": 43.414,
+      "Longitude": 24.616,
+      "Prices": {
+        "1_hour": 3,
+        "5_hours": 10,
+        "1_day": 20,
+        "1_week": 100,
+        "1_year": 1000
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot9": {
+      "Name": "Parking Lot I",
+      "City": "Sliven",
+      "Status": "Available",
+      "Latitude": 42.6858,
+      "Longitude": 26.3292,
+      "Prices": {
+        "1_hour": 2,
+        "5_hours": 8,
+        "1_day": 18,
+        "1_week": 90,
+        "1_year": 950
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot10": {
+      "Name": "Parking Lot J",
+      "City": "Dobrich",
+      "Status": "Available",
+      "Latitude": 43.566,
+      "Longitude": 27.8273,
+      "Prices": {
+        "1_hour": 3.5,
+        "5_hours": 11,
+        "1_day": 22,
+        "1_week": 105,
+        "1_year": 1020
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot11": {
+      "Name": "Parking Lot K",
+      "City": "Blagoevgrad",
+      "Status": "Available",
+      "Latitude": 42.0209,
+      "Longitude": 23.0947,
+      "Prices": {
+        "1_hour": 3,
+        "5_hours": 10,
+        "1_day": 20,
+        "1_week": 100,
+        "1_year": 1000
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot12": {
+      "Name": "Parking Lot L",
+      "City": "Gabrovo",
+      "Status": "Available",
+      "Latitude": 42.8747,
+      "Longitude": 25.3342,
+      "Prices": {
+        "1_hour": 3,
+        "5_hours": 10,
+        "1_day": 20,
+        "1_week": 100,
+        "1_year": 1000
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot13": {
+      "Name": "Parking Lot M",
+      "City": "Haskovo",
+      "Status": "Available",
+      "Latitude": 41.9341,
+      "Longitude": 25.555,
+      "Prices": {
+        "1_hour": 2,
+        "5_hours": 8,
+        "1_day": 18,
+        "1_week": 90,
+        "1_year": 950
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot14": {
+      "Name": "Parking Lot N",
+      "City": "Kardzhali",
+      "Status": "Available",
+      "Latitude": 41.6489,
+      "Longitude": 25.3742,
+      "Prices": {
+        "1_hour": 3.5,
+        "5_hours": 11,
+        "1_day": 22,
+        "1_week": 105,
+        "1_year": 1020
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot15": {
+      "Name": "Parking Lot O",
+      "City": "Kyustendil",
+      "Status": "Available",
+      "Latitude": 42.2836,
+      "Longitude": 22.6911,
+      "Prices": {
+        "1_hour": 4,
+        "5_hours": 13,
+        "1_day": 26,
+        "1_week": 115,
+        "1_year": 1080
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot16": {
+      "Name": "Parking Lot P",
+      "City": "Lovech",
+      "Status": "Available",
+      "Latitude": 43.1374,
+      "Longitude": 24.7064,
+      "Prices": {
+        "1_hour": 3,
+        "5_hours": 9,
+        "1_day": 19,
+        "1_week": 95,
+        "1_year": 970
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot17": {
+      "Name": "Parking Lot Q",
+      "City": "Montana",
+      "Status": "Available",
+      "Latitude": 43.412,
+      "Longitude": 23.225,
+      "Prices": {
+        "1_hour": 4,
+        "5_hours": 12,
+        "1_day": 25,
+        "1_week": 110,
+        "1_year": 1050
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot18": {
+      "Name": "Parking Lot R",
+      "City": "Pazardzhik",
+      "Status": "Available",
+      "Latitude": 42.1928,
+      "Longitude": 24.3334,
+      "Prices": {
+        "1_hour": 3,
+        "5_hours": 10,
+        "1_day": 20,
+        "1_week": 100,
+        "1_year": 1000
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot19": {
+      "Name": "Parking Lot S",
+      "City": "Pernik",
+      "Status": "Available",
+      "Latitude": 42.6052,
+      "Longitude": 23.0364,
+      "Prices": {
+        "1_hour": 3.5,
+        "5_hours": 11,
+        "1_day": 22,
+        "1_week": 105,
+        "1_year": 1020
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot20": {
+      "Name": "Parking Lot T",
+      "City": "Razgrad",
+      "Status": "Available",
+      "Latitude": 43.533,
+      "Longitude": 26.5238,
+      "Prices": {
+        "1_hour": 4,
+        "5_hours": 13,
+        "1_day": 26,
+        "1_week": 115,
+        "1_year": 1080
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot21": {
+      "Name": "Parking Lot U",
+      "City": "Shumen",
+      "Status": "Available",
+      "Latitude": 43.27,
+      "Longitude": 26.9262,
+      "Prices": {
+        "1_hour": 3,
+        "5_hours": 9,
+        "1_day": 19,
+        "1_week": 95,
+        "1_year": 970
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot22": {
+      "Name": "Parking Lot V",
+      "City": "Silistra",
+      "Status": "Available",
+      "Latitude": 44.1177,
+      "Longitude": 27.2603,
+      "Prices": {
+        "1_hour": 4,
+        "5_hours": 12,
+        "1_day": 25,
+        "1_week": 110,
+        "1_year": 1050
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot23": {
+      "Name": "Parking Lot W",
+      "City": "Smolyan",
+      "Status": "Available",
+      "Latitude": 41.575,
+      "Longitude": 24.712,
+      "Prices": {
+        "1_hour": 3,
+        "5_hours": 10,
+        "1_day": 20,
+        "1_week": 100,
+        "1_year": 1000
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot24": {
+      "Name": "Parking Lot X",
+      "City": "Sofia City",
+      "Status": "Available",
+      "Latitude": 42.6977,
+      "Longitude": 23.3219,
+      "Prices": {
+        "1_hour": 2,
+        "5_hours": 8,
+        "1_day": 18,
+        "1_week": 90,
+        "1_year": 950
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot25": {
+      "Name": "Parking Lot Y",
+      "City": "Sofia Province",
+      "Status": "Available",
+      "Latitude": 42.6977,
+      "Longitude": 23.3219,
+      "Prices": {
+        "1_hour": 3.5,
+        "5_hours": 11,
+        "1_day": 22,
+        "1_week": 105,
+        "1_year": 1020
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot26": {
+      "Name": "Parking Lot Z",
+      "City": "Stara Zagora",
+      "Status": "Available",
+      "Latitude": 42.4258,
+      "Longitude": 25.6345,
+      "Prices": {
+        "1_hour": 4,
+        "5_hours": 13,
+        "1_day": 26,
+        "1_week": 115,
+        "1_year": 1080
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot27": {
+      "Name": "Parking Lot AA",
+      "City": "Targovishte",
+      "Status": "Available",
+      "Latitude": 43.2465,
+      "Longitude": 26.5735,
+      "Prices": {
+        "1_hour": 3,
+        "5_hours": 10,
+        "1_day": 20,
+        "1_week": 100,
+        "1_year": 1000
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot28": {
+      "Name": "Parking Lot BB",
+      "City": "Varna",
+      "Status": "Available",
+      "Latitude": 43.2141,
+      "Longitude": 27.9147,
+      "Prices": {
+        "1_hour": 2.5,
+        "5_hours": 9,
+        "1_day": 18,
+        "1_week": 90,
+        "1_year": 950
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot29": {
+      "Name": "Parking Lot CC",
+      "City": "Veliko Tarnovo",
+      "Status": "Available",
+      "Latitude": 43.0842,
+      "Longitude": 25.6556,
+      "Prices": {
+        "1_hour": 3.5,
+        "5_hours": 11,
+        "1_day": 22,
+        "1_week": 105,
+        "1_year": 1020
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot30": {
+      "Name": "Parking Lot DD",
+      "City": "Vidin",
+      "Status": "Available",
+      "Latitude": 43.9944,
+      "Longitude": 22.8675,
+      "Prices": {
+        "1_hour": 4,
+        "5_hours": 12,
+        "1_day": 25,
+        "1_week": 110,
+        "1_year": 1050
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot31": {
+      "Name": "Parking Lot EE",
+      "City": "Vratsa",
+      "Status": "Available",
+      "Latitude": 43.204,
+      "Longitude": 23.552,
+      "Prices": {
+        "1_hour": 3,
+        "5_hours": 9,
+        "1_day": 19,
+        "1_week": 95,
+        "1_year": 970
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    },
+    "slot32": {
+      "Name": "Parking Lot FF",
+      "City": "Yambol",
+      "Status": "Available",
+      "Latitude": 42.484,
+      "Longitude": 26.503,
+      "Prices": {
+        "1_hour": 2,
+        "5_hours": 8,
+        "1_day": 18,
+        "1_week": 90,
+        "1_year": 950
+      },
+      "Reviews": [
+        {
+          "UserID": "",
+          "Comment": "",
+          "Rating": 0,
+          "Date": ""
+        }
+      ]
+    }
+  }
+}
