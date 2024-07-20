@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ParkingApp</string>
+    <string name="app_name">ParkingApp for All</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="profile">Profile</string>
@@ -12,5 +12,4 @@
     <string name="feedback_hint">Enter your feedback</string>
     <string name="submit_feedback">Submit</string>
     <string name="feedback_icon">Feedback Icon</string>
-    <string name="google_maps_key">AIzaSyCIKPwixFT_3JXzp9KZEo_GCdfE_JkhdXU</string>
 </resources>

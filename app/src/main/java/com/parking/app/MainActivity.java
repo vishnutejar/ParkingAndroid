@@ -2,7 +2,9 @@ package com.parking.app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.view.MenuItem; // Ensure this import is present
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -42,9 +44,64 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Initialize Buttons
+        initializeButtons();
+
         if (currentUser == null) {
             sendToLoginActivity();
         }
+    }
+
+    private void initializeButtons() {
+        findViewById(R.id.btn_profile).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+            }
+        });
+
+        findViewById(R.id.btn_feedback).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, FeedbackActivity.class));
+            }
+        });
+
+        findViewById(R.id.btn_change_password).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ChangePasswordActivity.class));
+            }
+        });
+
+        findViewById(R.id.btn_find_parking).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, FindParkingActivity.class));
+            }
+        });
+
+        findViewById(R.id.btn_recommended_parking).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RecommendedParkingActivity.class));
+            }
+        });
+
+        findViewById(R.id.btn_old_reservations).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, OldReservationsActivity.class));
+            }
+        });
+
+        findViewById(R.id.btn_logout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                sendToLoginActivity();
+            }
+        });
     }
 
     @Override
