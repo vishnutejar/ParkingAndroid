@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
@@ -26,20 +25,10 @@ public class ParkingSlotAdapter extends RecyclerView.Adapter<ParkingSlotAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ParkingSlotViewHolder holder, int position) {
-        ParkingSlot parkingSlot = parkingSlotList.get(position);
-        holder.slotNameTextView.setText(parkingSlot.getName());
-        holder.slotStatusTextView.setText(parkingSlot.getStatus());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String prices = "Prices: \n1 hour: " + parkingSlot.getPrices().get("1_hour") + " euro\n" +
-                        "5 hours: " + parkingSlot.getPrices().get("5_hours") + " euro\n" +
-                        "1 day: " + parkingSlot.getPrices().get("1_day") + " euro\n" +
-                        "1 week: " + parkingSlot.getPrices().get("1_week") + " euro\n" +
-                        "1 year: " + parkingSlot.getPrices().get("1_year") + " euro";
-                Toast.makeText(v.getContext(), prices, Toast.LENGTH_LONG).show();
-            }
-        });
+        ParkingSlot slot = parkingSlotList.get(position);
+        holder.slotNameTextView.setText(slot.getName());
+        holder.latitudeTextView.setText(String.valueOf(slot.getLatitude()));
+        holder.longitudeTextView.setText(String.valueOf(slot.getLongitude()));
     }
 
     @Override
@@ -48,12 +37,13 @@ public class ParkingSlotAdapter extends RecyclerView.Adapter<ParkingSlotAdapter.
     }
 
     public static class ParkingSlotViewHolder extends RecyclerView.ViewHolder {
-        TextView slotNameTextView, slotStatusTextView;
+        TextView slotNameTextView, latitudeTextView, longitudeTextView;
 
         public ParkingSlotViewHolder(@NonNull View itemView) {
             super(itemView);
-            slotNameTextView = itemView.findViewById(R.id.slotNameTextView);
-            slotStatusTextView = itemView.findViewById(R.id.slotStatusTextView);
+            slotNameTextView = itemView.findViewById(R.id.slot_name);
+            latitudeTextView = itemView.findViewById(R.id.latitude);
+            longitudeTextView = itemView.findViewById(R.id.longitude);
         }
     }
 }
