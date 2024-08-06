@@ -3,16 +3,21 @@ package com.parking.app;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
-
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -81,30 +86,87 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
 
         loadParkingSlots(); // Load all parking slots initially
     }
-
     private void showParkingSlotDetails(ParkingSlot slot) {
+        // Check if the slot is already recommended or reserved
+        if ("Recommended".equals(slot.getStatus()) || "Reserved".equals(slot.getStatus())) {
+            Toast.makeText(this, "This slot is already " + slot.getStatus().toLowerCase(), Toast.LENGTH_SHORT).show();
+            return; // Exit the method, preventing further interaction
+        }
+    
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(slot.getName());
-        builder.setMessage(buildMessage(slot));
-        builder.setPositiveButton("Recommend", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                updateParkingSlotStatus(slot, "Recommended");
+    
+        // Inflate custom layout
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_price_selection, null);
+        builder.setView(dialogView);
+    
+        RadioGroup priceRadioGroup = dialogView.findViewById(R.id.priceRadioGroup);
+    
+        // Add radio buttons dynamically
+        Map<String, Integer> pricesMap = slot.getPrices();
+        if (pricesMap != null) {
+            for (Map.Entry<String, Integer> entry : pricesMap.entrySet()) {
+                RadioButton radioButton = new RadioButton(this);
+                radioButton.setText(entry.getKey() + ": $" + entry.getValue());
+                radioButton.setId(View.generateViewId());
+                priceRadioGroup.addView(radioButton);
             }
+        }
+    
+        builder.setPositiveButton("Recommend", (dialog, which) -> {
+            handlePriceSelection(priceRadioGroup, slot, "Recommended");
         });
-        builder.setNegativeButton("Reserve", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                updateParkingSlotStatus(slot, "Reserved");
-            }
+    
+        builder.setNegativeButton("Reserve", (dialog, which) -> {
+            handlePriceSelection(priceRadioGroup, slot, "Reserved");
         });
+    
         builder.create().show();
     }
+
+    private void handlePriceSelection(RadioGroup priceRadioGroup, ParkingSlot slot, String status) {
+        // Check if the slot is already recommended or reserved
+        if ("Recommended".equals(slot.getStatus()) || "Reserved".equals(slot.getStatus())) {
+            Toast.makeText(this, "This slot is already " + slot.getStatus().toLowerCase(), Toast.LENGTH_SHORT).show();
+            return; // Prevent any further action
+        }
+    
+        int selectedId = priceRadioGroup.getCheckedRadioButtonId();
+        if (selectedId != -1) {
+            // Find the selected RadioButton by its ID
+            RadioButton selectedRadioButton = priceRadioGroup.findViewById(selectedId);
+            if (selectedRadioButton != null) {
+                String selectedPrice = selectedRadioButton.getText().toString();
+                slot.setSelectedPrice(selectedPrice);
+    
+                // Update the slot status and selected price in Firebase
+                DatabaseReference slotRef = FirebaseDatabase.getInstance().getReference().child("ParkingSlots").child(slot.getName());
+                slotRef.child("Status").setValue(status);
+                slotRef.child("SelectedPrice").setValue(selectedPrice);
+    
+                // Create notification for the action
+                createNotification("You have " + status.toLowerCase() + " the parking slot: " + slot.getName() + " at " + selectedPrice);
+                Toast.makeText(this, "Parking slot " + status.toLowerCase() + " successfully!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Error finding selected price option.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "Please select a price", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
 
     private String buildMessage(ParkingSlot slot) {
         StringBuilder message = new StringBuilder();
         message.append("Status: ").append(slot.getStatus()).append("\n");
-        message.append("Prices:\n");
-        for (Map.Entry<String, Integer> entry : slot.getPrices().entrySet()) {
-            message.append(entry.getKey()).append(": $").append(entry.getValue()).append("\n");
+        if (slot.getPrices() != null) {
+            message.append("Prices:\n");
+            for (Map.Entry<String, Integer> entry : slot.getPrices().entrySet()) {
+                message.append(entry.getKey()).append(": $").append(entry.getValue()).append("\n");
+            }
+        } else {
+            message.append("No pricing information available.\n");
         }
         return message.toString();
     }
@@ -114,7 +176,7 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
         slotRef.setValue(newStatus);
 
         String notificationMessage = newStatus.equals("Recommended") ? "You have recommended the parking slot: " : "You have reserved the parking slot: ";
-        createNotification(notificationMessage + slot.getName());
+        createNotification(notificationMessage + slot.getName() + " at " + slot.getSelectedPrice());
     }
 
     private void createNotification(String message) {
@@ -126,6 +188,9 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         notificationManager.notify(1, builder.build());
     }
 
@@ -154,9 +219,28 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String slotName = snapshot.child("Name").getValue(String.class);
                     String status = snapshot.child("Status").getValue(String.class);
-                    Double latitude = snapshot.child("Latitude").getValue(Double.class);
-                    Double longitude = snapshot.child("Longitude").getValue(Double.class);
-                    Map<String, Integer> prices = (Map<String, Integer>) snapshot.child("Prices").getValue();
+                    Double latitude = null;
+                    Double longitude = null;
+                    Map<String, Integer> prices = null;
+
+                    try {
+                        latitude = snapshot.child("Latitude").getValue(Double.class);
+                        longitude = snapshot.child("Longitude").getValue(Double.class);
+                    } catch (Exception e) {
+                        String latStr = snapshot.child("Latitude").getValue(String.class);
+                        String lonStr = snapshot.child("Longitude").getValue(String.class);
+
+                        if (latStr != null && lonStr != null) {
+                            try {
+                                latitude = Double.parseDouble(latStr);
+                                longitude = Double.parseDouble(lonStr);
+                            } catch (NumberFormatException ex) {
+                                Toast.makeText(FindParkingActivity.this, "Invalid latitude/longitude for slot: " + slotName, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    prices = (Map<String, Integer>) snapshot.child("Prices").getValue();
 
                     if (slotName != null && status != null && latitude != null && longitude != null && prices != null) {
                         ParkingSlot parkingSlot = new ParkingSlot(slotName, status, latitude, longitude, prices);
@@ -176,64 +260,73 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(FindParkingActivity.this, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FindParkingActivity.this, "Failed to load parking slots.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void searchParkingSlots(String locationName) {
-        LatLng searchedLocation = BULGARIA_CENTER;
+        Query query = FirebaseDatabase.getInstance().getReference().child("ParkingSlots").orderByChild("Name").startAt(locationName).endAt(locationName + "\uf8ff");
 
-        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child("ParkingSlots");
-        Query query = databaseRef.orderByChild("Latitude").equalTo(searchedLocation.latitude);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<ParkingSlot> filteredList = new ArrayList<>();
+                parkingSlotList.clear();
+                mMap.clear();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String slotName = snapshot.child("Name").getValue(String.class);
                     String status = snapshot.child("Status").getValue(String.class);
-                    Double latitude = snapshot.child("Latitude").getValue(Double.class);
-                    Double longitude = snapshot.child("Longitude").getValue(Double.class);
-                    Map<String, Integer> prices = (Map<String, Integer>) snapshot.child("Prices").getValue();
+                    Double latitude = null;
+                    Double longitude = null;
+                    Map<String, Integer> prices = null;
+
+                    try {
+                        latitude = snapshot.child("Latitude").getValue(Double.class);
+                        longitude = snapshot.child("Longitude").getValue(Double.class);
+                    } catch (Exception e) {
+                        String latStr = snapshot.child("Latitude").getValue(String.class);
+                        String lonStr = snapshot.child("Longitude").getValue(String.class);
+
+                        if (latStr != null && lonStr != null) {
+                            try {
+                                latitude = Double.parseDouble(latStr);
+                                longitude = Double.parseDouble(lonStr);
+                            } catch (NumberFormatException ex) {
+                                Toast.makeText(FindParkingActivity.this, "Invalid latitude/longitude for slot: " + slotName, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    prices = (Map<String, Integer>) snapshot.child("Prices").getValue();
 
                     if (slotName != null && status != null && latitude != null && longitude != null && prices != null) {
                         ParkingSlot parkingSlot = new ParkingSlot(slotName, status, latitude, longitude, prices);
-                        filteredList.add(parkingSlot);
+                        parkingSlotList.add(parkingSlot);
+
+                        LatLng location = new LatLng(latitude, longitude);
+                        Marker marker = mMap.addMarker(new MarkerOptions().position(location).title(slotName).snippet("Status: " + status));
+                        marker.setTag(parkingSlot);
                     }
                 }
 
-                if (filteredList.isEmpty()) {
-                    Toast.makeText(FindParkingActivity.this, "No parking slots available near " + locationName, Toast.LENGTH_SHORT).show();
-                } else {
-                    parkingSlotList.clear();
-                    parkingSlotList.addAll(filteredList);
-                    adapter.notifyDataSetChanged();
-
-                    mMap.clear();
-                    for (ParkingSlot slot : filteredList) {
-                        LatLng location = new LatLng(slot.getLatitude(), slot.getLongitude());
-                        Marker marker = mMap.addMarker(new MarkerOptions().position(location).title(slot.getName()).snippet("Status: " + slot.getStatus()));
-                        marker.setTag(slot);
-                    }
-
-                    ParkingSlot firstSlot = filteredList.get(0);
-                    LatLng firstLocation = new LatLng(firstSlot.getLatitude(), firstSlot.getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 12));
+                adapter.notifyDataSetChanged();
+                if (!parkingSlotList.isEmpty()) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BULGARIA_CENTER, 7));
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(FindParkingActivity.this, "Search failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FindParkingActivity.this, "Failed to search parking slots.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -241,10 +334,10 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
                 if (slot != null) {
                     showParkingSlotDetails(slot);
                 }
-                return true;
+                return false;
             }
         });
 
-        loadParkingSlots(); // Load parking slots when map is ready
+        loadParkingSlots();
     }
 }

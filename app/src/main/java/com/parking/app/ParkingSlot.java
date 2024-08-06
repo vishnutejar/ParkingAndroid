@@ -8,6 +8,7 @@ public class ParkingSlot {
     private double latitude;
     private double longitude;
     private Map<String, Integer> prices;
+    private String selectedPrice; 
 
     public ParkingSlot(String name, String status, double latitude, double longitude, Map<String, Integer> prices) {
         this.name = name;
@@ -15,6 +16,7 @@ public class ParkingSlot {
         this.latitude = latitude;
         this.longitude = longitude;
         this.prices = prices;
+        this.selectedPrice = null;
     }
 
     public String getName() {
@@ -36,4 +38,12 @@ public class ParkingSlot {
     public Map<String, Integer> getPrices() {
         return prices;
     }
+        // Getter and setter for selectedPrice
+        public String getSelectedPrice() {
+            return selectedPrice;
+        }
+    
+        public void setSelectedPrice(String selectedPrice) {
+            this.selectedPrice = selectedPrice;
+        }
 }
