@@ -1,26 +1,26 @@
-package com.parking.app;
+package com.parking.app.views;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.parking.app.adapters.ParkingSlotAdapter;
+import com.parking.app.R;
+import com.parking.app.models.ParkingSlot;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class RecommendedParkingActivity extends AppCompatActivity {
+public class OldReservationsActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
     private RecyclerView recyclerView;
@@ -30,10 +30,10 @@ public class RecommendedParkingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recommended_parking);
+        setContentView(R.layout.activity_old_reservations);
 
         // Initialize Firebase
-        databaseReference = FirebaseDatabase.getInstance().getReference("RecommendedParkingSlots");
+        databaseReference = FirebaseDatabase.getInstance().getReference("old_reservations");
 
         // Initialize RecyclerView
         recyclerView = findViewById(R.id.recycler_view); // Ensure this ID matches the one in XML
@@ -43,11 +43,11 @@ public class RecommendedParkingActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(parkingSlotAdapter);
 
-        loadRecommendedParkingSlots();
+        loadReservedSlots();
     }
 
-    private void loadRecommendedParkingSlots() {
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void loadReservedSlots() {
+        databaseReference.orderByChild("Status").equalTo("Reserved").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 parkingSlotList.clear();
@@ -58,7 +58,7 @@ public class RecommendedParkingActivity extends AppCompatActivity {
                     Double longitude = snapshot.child("Longitude").getValue(Double.class);
                     Map<String, Integer> slotPrices = (Map<String, Integer>) snapshot.child("Prices").getValue();
 
-                    if (slotName != null && slotStatus != null && latitude != null && longitude != null && slotPrices != null) {
+                    if (slotName != null && slotStatus != null && latitude != null && longitude != null) {
                         ParkingSlot slot = new ParkingSlot(slotName, slotStatus, latitude, longitude, slotPrices);
                         parkingSlotList.add(slot);
                     }
@@ -68,8 +68,7 @@ public class RecommendedParkingActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(RecommendedParkingActivity.this, "Failed to load recommended parking slots.", Toast.LENGTH_SHORT).show();
-                Log.e("FirebaseError", "Error loading recommended parking slots: " + databaseError.getMessage());
+                Toast.makeText(OldReservationsActivity.this, "Failed to load reserved slots.", Toast.LENGTH_SHORT).show();
             }
         });
     }

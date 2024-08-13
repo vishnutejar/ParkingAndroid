@@ -1,4 +1,4 @@
-package com.parking.app;
+package com.parking.app.views;
 import android.app.ProgressDialog;
 import android.content.Intent;
 //import android.support.annotation.NonNull;
@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.parking.app.R;
 
 //import missing.namespace.R;
 
@@ -97,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void sendUserToLoginActivity() {
         //This is to send user to Login Activity.
-        Intent loginIntent = new Intent(RegisterActivity.this,LoginActivity.class);
+        Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
         startActivity(loginIntent);
     }
 }

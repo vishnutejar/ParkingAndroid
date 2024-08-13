@@ -1,10 +1,9 @@
-package com.parking.app;
+package com.parking.app.views;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem; // Ensure this import is present
 import android.view.View;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,6 +15,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.parking.app.R;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (currentUser == null) {
             sendToLoginActivity();
         }
+
     }
 
     private void initializeButtons() {

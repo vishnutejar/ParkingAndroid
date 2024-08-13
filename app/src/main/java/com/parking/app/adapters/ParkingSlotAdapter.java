@@ -1,4 +1,4 @@
-package com.parking.app;
+package com.parking.app.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,6 +6,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.parking.app.R;
+import com.parking.app.models.ParkingSlot;
+
 import java.util.List;
 
 public class ParkingSlotAdapter extends RecyclerView.Adapter<ParkingSlotAdapter.ParkingSlotViewHolder> {

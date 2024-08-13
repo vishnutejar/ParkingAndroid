@@ -1,4 +1,4 @@
-package com.parking.app;
+package com.parking.app.views;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.parking.app.R;
 
 public class ProfileActivity extends AppCompatActivity {
 

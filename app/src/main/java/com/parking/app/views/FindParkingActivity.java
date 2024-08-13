@@ -1,8 +1,8 @@
-package com.parking.app;
+package com.parking.app.views;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,10 +13,11 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
-import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -37,7 +38,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.parking.app.AppContants;
+import com.parking.app.adapters.ParkingSlotAdapter;
+import com.parking.app.R;
+import com.parking.app.models.ParkingSlot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +55,7 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
     private List<ParkingSlot> parkingSlotList;
     private EditText searchEditText;
     private GoogleMap mMap;
-
+    private ConstraintLayout constraintLayout;
     private static final LatLng BULGARIA_CENTER = new LatLng(42.7339, 25.4858);
 
     @Override
@@ -59,6 +65,7 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
 
         FirebaseApp.initializeApp(this);
 
+        constraintLayout = findViewById(R.id.container_layout);
         recyclerView = findViewById(R.id.recyclerView);
         searchEditText = findViewById(R.id.searchEditText);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -86,23 +93,24 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
 
         loadParkingSlots(); // Load all parking slots initially
     }
+
     private void showParkingSlotDetails(ParkingSlot slot) {
         // Check if the slot is already recommended or reserved
         if ("Recommended".equals(slot.getStatus()) || "Reserved".equals(slot.getStatus())) {
             Toast.makeText(this, "This slot is already " + slot.getStatus().toLowerCase(), Toast.LENGTH_SHORT).show();
             return; // Exit the method, preventing further interaction
         }
-    
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(slot.getName());
-    
+
         // Inflate custom layout
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_price_selection, null);
         builder.setView(dialogView);
-    
+
         RadioGroup priceRadioGroup = dialogView.findViewById(R.id.priceRadioGroup);
-    
+
         // Add radio buttons dynamically
         Map<String, Integer> pricesMap = slot.getPrices();
         if (pricesMap != null) {
@@ -113,15 +121,15 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
                 priceRadioGroup.addView(radioButton);
             }
         }
-    
+
         builder.setPositiveButton("Recommend", (dialog, which) -> {
             handlePriceSelection(priceRadioGroup, slot, "Recommended");
         });
-    
+
         builder.setNegativeButton("Reserve", (dialog, which) -> {
             handlePriceSelection(priceRadioGroup, slot, "Reserved");
         });
-    
+
         builder.create().show();
     }
 
@@ -131,7 +139,7 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
             Toast.makeText(this, "This slot is already " + slot.getStatus().toLowerCase(), Toast.LENGTH_SHORT).show();
             return; // Prevent any further action
         }
-    
+
         int selectedId = priceRadioGroup.getCheckedRadioButtonId();
         if (selectedId != -1) {
             // Find the selected RadioButton by its ID
@@ -139,12 +147,12 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
             if (selectedRadioButton != null) {
                 String selectedPrice = selectedRadioButton.getText().toString();
                 slot.setSelectedPrice(selectedPrice);
-    
+
                 // Update the slot status and selected price in Firebase
                 DatabaseReference slotRef = FirebaseDatabase.getInstance().getReference().child("ParkingSlots").child(slot.getName());
                 slotRef.child("Status").setValue(status);
                 slotRef.child("SelectedPrice").setValue(selectedPrice);
-    
+
                 // Create notification for the action
                 createNotification("You have " + status.toLowerCase() + " the parking slot: " + slot.getName() + " at " + selectedPrice);
                 Toast.makeText(this, "Parking slot " + status.toLowerCase() + " successfully!", Toast.LENGTH_SHORT).show();
@@ -155,7 +163,7 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
             Toast.makeText(this, "Please select a price", Toast.LENGTH_SHORT).show();
         }
     }
-    
+
 
     private String buildMessage(ParkingSlot slot) {
         StringBuilder message = new StringBuilder();
@@ -332,7 +340,16 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
             public boolean onMarkerClick(Marker marker) {
                 ParkingSlot slot = (ParkingSlot) marker.getTag();
                 if (slot != null) {
-                    showParkingSlotDetails(slot);
+                    //showParkingSlotDetails(slot);
+
+                    Intent intent = new Intent(FindParkingActivity.this, FindParkingDetailsActivity.class);
+                    intent.putExtra(AppContants.SlotName, slot.getName());
+                    intent.putExtra(AppContants.SlotLatitude, slot.getLatitude());
+                    intent.putExtra(AppContants.SlotLongitude, slot.getLongitude());
+                    intent.putExtra(AppContants.SlotStatus, slot.getStatus());
+                    intent.putExtra(AppContants.SlotMapPrices, (Serializable) slot.getPrices());
+                    startActivity(intent);
+                    return true;
                 }
                 return false;
             }

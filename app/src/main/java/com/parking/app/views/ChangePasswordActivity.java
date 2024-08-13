@@ -1,4 +1,4 @@
-package com.parking.app;
+package com.parking.app.views;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.parking.app.R;
 
 public class ChangePasswordActivity extends AppCompatActivity {
 
