@@ -108,20 +108,20 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String valueKey = snapshot.getKey();
-                    String City = snapshot.child("City").getValue(String.class);
-                    String slotName = snapshot.child("Name").getValue(String.class);
-                    String status = snapshot.child("Status").getValue(String.class);
-                    ArrayList<Map<String, Integer>> reviews = (ArrayList<Map<String, Integer>>) snapshot.child("Reviews").getValue();
+                    String City = snapshot.child("city").getValue(String.class);
+                    String slotName = snapshot.child("name").getValue(String.class);
+                    String status = snapshot.child("status").getValue(String.class);
+                    ArrayList<Map<String, Integer>> reviews = (ArrayList<Map<String, Integer>>) snapshot.child("reviews").getValue();
                     Double latitude = null;
                     Double longitude = null;
                     Map<String, Integer> prices = null;
 
                     try {
-                        latitude = snapshot.child("Latitude").getValue(Double.class);
-                        longitude = snapshot.child("Longitude").getValue(Double.class);
+                        latitude = snapshot.child("latitude").getValue(Double.class);
+                        longitude = snapshot.child("longitude").getValue(Double.class);
                     } catch (Exception e) {
-                        String latStr = snapshot.child("Latitude").getValue(String.class);
-                        String lonStr = snapshot.child("Longitude").getValue(String.class);
+                        String latStr = snapshot.child("latitude").getValue(String.class);
+                        String lonStr = snapshot.child("longitude").getValue(String.class);
 
                         if (latStr != null && lonStr != null) {
                             try {
@@ -133,7 +133,7 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
                         }
                     }
 
-                    prices = (Map<String, Integer>) snapshot.child("Prices").getValue();
+                    prices = (Map<String, Integer>) snapshot.child("prices").getValue();
 
                     if (slotName != null && status != null && latitude != null && longitude != null && prices != null) {
                         ParkingSlot parkingSlot = new ParkingSlot(slotName, status, latitude, longitude, prices, reviews);

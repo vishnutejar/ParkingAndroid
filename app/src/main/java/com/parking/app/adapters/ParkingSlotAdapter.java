@@ -31,9 +31,10 @@ public class ParkingSlotAdapter extends RecyclerView.Adapter<ParkingSlotAdapter.
     public void onBindViewHolder(@NonNull ParkingSlotViewHolder holder, int position) {
         ParkingSlot slot = parkingSlotList.get(position);
         holder.slotNameTextView.setText("Name : "+slot.getName());
-        holder.txt_prise.setText(String.valueOf(slot.getSelectedPrice()));
-        holder.txt_contact.setText(String.valueOf("Contact : "+"9739393939"));
-        holder.txt_city.setText(String.valueOf("City : "+slot.getCity()));
+        holder.txt_prise.setText("Price : " + slot.getSelectedPrice());
+        holder.txt_contact.setText("Contact : " + "9739393939");
+        holder.txt_city.setText("City : " + slot.getCity());
+        holder.txt_rating.setText(String.valueOf(slot.getSelectedRating()));
     }
 
     @Override
@@ -42,13 +43,14 @@ public class ParkingSlotAdapter extends RecyclerView.Adapter<ParkingSlotAdapter.
     }
 
     public static class ParkingSlotViewHolder extends RecyclerView.ViewHolder {
-        TextView slotNameTextView, txt_prise, txt_contact,txt_city;
+        TextView slotNameTextView, txt_prise, txt_contact,txt_city,txt_rating;
 
         public ParkingSlotViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_city = itemView.findViewById(R.id.txt_city);
             slotNameTextView = itemView.findViewById(R.id.slot_name);
             txt_prise = itemView.findViewById(R.id.txt_prise);
+            txt_rating = itemView.findViewById(R.id.txt_rating);
             txt_contact = itemView.findViewById(R.id.txt_contact);
         }
     }

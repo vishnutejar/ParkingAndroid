@@ -49,23 +49,25 @@ public class RecommendedParkingActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String status = snapshot.child("Status").getValue(String.class);
+                    String status = snapshot.child("status").getValue(String.class);
 
                     if (status != null)
                         if (status.equals(Recommended)) {
-                            String slotName = snapshot.child("Name").getValue(String.class);
-                            String city = snapshot.child("City").getValue(String.class);
+                            String slotName = snapshot.child("name").getValue(String.class);
+                            String city = snapshot.child("city").getValue(String.class);
+                            String selectedPrice = snapshot.child("selectedPrice").getValue(String.class);
+                            String selectedRating = snapshot.child("selectedRating").getValue(String.class);
                             Double latitude = null;
                             Double longitude = null;
                             Map<String, Integer> prices = null;
                             ArrayList<Map<String, Integer>> reviews = null;
 
                             try {
-                                latitude = snapshot.child("Latitude").getValue(Double.class);
-                                longitude = snapshot.child("Longitude").getValue(Double.class);
+                                latitude = snapshot.child("latitude").getValue(Double.class);
+                                longitude = snapshot.child("longitude").getValue(Double.class);
                             } catch (Exception e) {
-                                String latStr = snapshot.child("Latitude").getValue(String.class);
-                                String lonStr = snapshot.child("Longitude").getValue(String.class);
+                                String latStr = snapshot.child("latitude").getValue(String.class);
+                                String lonStr = snapshot.child("longitude").getValue(String.class);
 
                                 if (latStr != null && lonStr != null) {
                                     try {
@@ -77,12 +79,15 @@ public class RecommendedParkingActivity extends AppCompatActivity {
                                 }
                             }
 
-                            prices = (Map<String, Integer>) snapshot.child("Prices").getValue();
-                            reviews = (ArrayList<Map<String, Integer>>) snapshot.child("Reviews").getValue();
+                            prices = (Map<String, Integer>) snapshot.child("prices").getValue();
+                            reviews = (ArrayList<Map<String, Integer>>) snapshot.child("reviews").getValue();
 
                             if (slotName != null && status != null && latitude != null && longitude != null && prices != null) {
                                 ParkingSlot parkingSlot = new ParkingSlot(slotName, status, latitude, longitude, prices, reviews);
                                 parkingSlot.setCity(city);
+                                parkingSlot.setValueKey(snapshot.getKey());
+                                parkingSlot.setSelectedPrice(selectedPrice);
+                                parkingSlot.setSelectedRating(selectedRating);
                                 parkingSlotList.add(parkingSlot);
 
                       /*  LatLng location = new LatLng(latitude, longitude);
