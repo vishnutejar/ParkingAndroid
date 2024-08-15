@@ -2,6 +2,7 @@ package com.parking.app.views;
 
 import static com.parking.app.AppContants.Recommended;
 import static com.parking.app.AppContants.Reserved;
+import static com.parking.app.AppContants.SlotReviews;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,14 +30,19 @@ import com.parking.app.AppContants;
 import com.parking.app.R;
 import com.parking.app.models.ParkingSlot;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class FindParkingDetailsActivity extends AppCompatActivity {
 
     private RadioGroup priceRadioGroup;
-    private TextView txt_title;
+    private TextView txt_title, txt_city;
     private ImageView img_back;
     Button bt_recommend, bt_reserve, bt_contact;
+    RatingBar ratingBar;
+    String selectedRating;
+    Map<String, Integer> price;
+    ArrayList<Map<String, Integer>> reviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,19 +50,21 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_find_parking_details);
         Intent intent = getIntent();
 
-        String name = intent.getExtras().getString(AppContants.SlotName);
-        String status = intent.getExtras().getString(AppContants.SlotStatus);
-        double latitude = intent.getExtras().getDouble(AppContants.SlotLatitude, 0.0);
-        double longitude = intent.getExtras().getDouble(AppContants.SlotLongitude, 0.0);
-        Map<String, Integer> price = (Map<String, Integer>) intent.getExtras().getSerializable(AppContants.SlotMapPrices);
+        ParkingSlot parkingSlot = intent.getExtras().getParcelable("obj");
+        price = (Map<String, Integer>) intent.getExtras().getSerializable(AppContants.SlotMapPrices);
+        reviews = (ArrayList<Map<String, Integer>>) intent.getExtras().getSerializable(SlotReviews);
+
         priceRadioGroup = findViewById(R.id.priceRadioGroup);
         txt_title = findViewById(R.id.txt_title);
+        txt_city = findViewById(R.id.txt_city);
         img_back = findViewById(R.id.img_back);
+        ratingBar = findViewById(R.id.ratingBar);
         bt_recommend = findViewById(R.id.bt_recommend);
         bt_reserve = findViewById(R.id.bt_reserve);
         bt_contact = findViewById(R.id.bt_contact);
         // Add radio buttons dynamically
         Map<String, Integer> pricesMap = price;
+
         if (pricesMap != null) {
             for (Map.Entry<String, Integer> entry : pricesMap.entrySet()) {
                 RadioButton radioButton = new RadioButton(this);
@@ -64,24 +73,31 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
                 priceRadioGroup.addView(radioButton);
             }
         }
-        txt_title.setText("Name : " + name);
+        txt_title.setText("Name : " + parkingSlot.getName());
+        txt_city.setText("City : " + parkingSlot.getCity());
         img_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
-        ParkingSlot slot = new ParkingSlot(name, status, latitude, longitude, price);
         bt_recommend.setOnClickListener(view -> {
-            handlePriceSelection(priceRadioGroup, slot, Recommended);
+            handlePriceSelection(priceRadioGroup, parkingSlot, Recommended);
             onBackPressed();
         });
         bt_reserve.setOnClickListener(view -> {
-            handlePriceSelection(priceRadioGroup, slot, Reserved);
+            handlePriceSelection(priceRadioGroup, parkingSlot, Reserved);
             onBackPressed();
 
         });
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                selectedRating = ratingBar.getRating() + "";
+            }
+        });
     }
+
 
     private void handlePriceSelection(RadioGroup priceRadioGroup, ParkingSlot slot, String status) {
         // Check if the slot is already recommended or reserved
@@ -97,12 +113,26 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
             if (selectedRadioButton != null) {
                 String selectedPrice = selectedRadioButton.getText().toString();
                 slot.setSelectedPrice(selectedPrice);
-
+                slot.setStatus(status);
+                slot.setReviews(reviews);
+                slot.setPrices(price);
+                if (selectedRating != null) {
+                    slot.setSelectedRating(selectedRating);
+                } else {
+                    slot.setSelectedRating("0");
+                }
                 // Update the slot status and selected price in Firebase
-                DatabaseReference slotRef = FirebaseDatabase.getInstance().getReference().child("ParkingSlots").child(slot.getName());
-                slotRef.child("Status").setValue(status);
-                slotRef.child("SelectedPrice").setValue(selectedPrice);
-
+                DatabaseReference slotRef = FirebaseDatabase.getInstance().getReference().child("ParkingSlots")
+                        .child(slot.getValueKey());
+                slotRef.setValue(slot).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(FindParkingDetailsActivity.this, " Slot value submitted successfully", Toast.LENGTH_SHORT).show();
+                        finish(); // Close activity
+                    } else {
+                        Toast.makeText(FindParkingDetailsActivity.this, "Failed to submit feedback", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                // slotRef.child("SelectedPrice").setValue(selectedPrice);
 
                 // Create notification for the action
                 createNotification("You have " + status.toLowerCase() + " the parking slot: " + slot.getName() + " at " + selectedPrice);

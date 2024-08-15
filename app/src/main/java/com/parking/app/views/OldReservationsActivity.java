@@ -2,11 +2,13 @@ package com.parking.app.views;
 
 import android.os.Bundle;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,9 +59,10 @@ public class OldReservationsActivity extends AppCompatActivity {
                     Double latitude = snapshot.child("Latitude").getValue(Double.class);
                     Double longitude = snapshot.child("Longitude").getValue(Double.class);
                     Map<String, Integer> slotPrices = (Map<String, Integer>) snapshot.child("Prices").getValue();
+                    ArrayList<Map<String, Integer>> slotReviews = (ArrayList<Map<String, Integer>>) snapshot.child("Reviews").getValue();
 
                     if (slotName != null && slotStatus != null && latitude != null && longitude != null) {
-                        ParkingSlot slot = new ParkingSlot(slotName, slotStatus, latitude, longitude, slotPrices);
+                        ParkingSlot slot = new ParkingSlot(slotName, slotStatus, latitude, longitude, slotPrices, slotReviews);
                         parkingSlotList.add(slot);
                     }
                 }

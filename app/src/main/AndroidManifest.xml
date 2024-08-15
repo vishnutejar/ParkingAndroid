@@ -42,8 +42,6 @@
         <activity android:name=".views.ChangePasswordActivity" />
         <activity android:name=".views.RecommendedParkingActivity" />
         <activity android:name=".views.OldReservationsActivity" />
-        <activity android:name=".views.RecommendedParkingActivity" />
-        <activity android:name=".views.OldReservationsActivity" />
     </application>
 
 </manifest>
