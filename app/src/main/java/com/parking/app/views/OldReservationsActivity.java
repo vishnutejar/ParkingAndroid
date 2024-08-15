@@ -1,5 +1,8 @@
 package com.parking.app.views;
 
+import static com.parking.app.AppContants.Recommended;
+import static com.parking.app.AppContants.Reserved;
+
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -48,18 +51,19 @@ public class OldReservationsActivity extends AppCompatActivity {
         loadReservedSlots();
     }
 
+/*
     private void loadReservedSlots() {
-        databaseReference.orderByChild("Status").equalTo("Reserved").addValueEventListener(new ValueEventListener() {
+        databaseReference.orderByChild("status").equalTo(Reserved).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 parkingSlotList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String slotName = snapshot.child("Name").getValue(String.class);
-                    String slotStatus = snapshot.child("Status").getValue(String.class);
-                    Double latitude = snapshot.child("Latitude").getValue(Double.class);
-                    Double longitude = snapshot.child("Longitude").getValue(Double.class);
-                    Map<String, Integer> slotPrices = (Map<String, Integer>) snapshot.child("Prices").getValue();
-                    ArrayList<Map<String, Integer>> slotReviews = (ArrayList<Map<String, Integer>>) snapshot.child("Reviews").getValue();
+                    String slotName = snapshot.child("name").getValue(String.class);
+                    String slotStatus = snapshot.child("status").getValue(String.class);
+                    Double latitude = snapshot.child("latitude").getValue(Double.class);
+                    Double longitude = snapshot.child("longitude").getValue(Double.class);
+                    Map<String, Integer> slotPrices = (Map<String, Integer>) snapshot.child("prices").getValue();
+                    ArrayList<Map<String, Integer>> slotReviews = (ArrayList<Map<String, Integer>>) snapshot.child("reviews").getValue();
 
                     if (slotName != null && slotStatus != null && latitude != null && longitude != null) {
                         ParkingSlot slot = new ParkingSlot(slotName, slotStatus, latitude, longitude, slotPrices, slotReviews);
@@ -75,4 +79,76 @@ public class OldReservationsActivity extends AppCompatActivity {
             }
         });
     }
+*/
+    private void loadReservedSlots() {
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child("ParkingSlots");
+
+        databaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String status = snapshot.child("status").getValue(String.class);
+
+                    if (status != null)
+                        if (status.equals(Reserved)) {
+                            String slotName = snapshot.child("name").getValue(String.class);
+                            String city = snapshot.child("city").getValue(String.class);
+                            String selectedPrice = snapshot.child("selectedPrice").getValue(String.class);
+                            String selectedRating = snapshot.child("selectedRating").getValue(String.class);
+                            Double latitude = null;
+                            Double longitude = null;
+                            Map<String, Integer> prices = null;
+                            ArrayList<Map<String, Integer>> reviews = null;
+
+                            try {
+                                latitude = snapshot.child("latitude").getValue(Double.class);
+                                longitude = snapshot.child("longitude").getValue(Double.class);
+                            } catch (Exception e) {
+                                String latStr = snapshot.child("latitude").getValue(String.class);
+                                String lonStr = snapshot.child("longitude").getValue(String.class);
+
+                                if (latStr != null && lonStr != null) {
+                                    try {
+                                        latitude = Double.parseDouble(latStr);
+                                        longitude = Double.parseDouble(lonStr);
+                                    } catch (NumberFormatException ex) {
+                                        Toast.makeText(OldReservationsActivity.this, "Invalid latitude/longitude for slot: " + slotName, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+
+                            prices = (Map<String, Integer>) snapshot.child("prices").getValue();
+                            reviews = (ArrayList<Map<String, Integer>>) snapshot.child("reviews").getValue();
+
+                            if (slotName != null && status != null && latitude != null && longitude != null && prices != null) {
+                                ParkingSlot parkingSlot = new ParkingSlot(slotName, status, latitude, longitude, prices, reviews);
+                                parkingSlot.setCity(city);
+                                parkingSlot.setValueKey(snapshot.getKey());
+                                parkingSlot.setSelectedPrice(selectedPrice);
+                                parkingSlot.setSelectedRating(selectedRating);
+                                parkingSlotList.add(parkingSlot);
+
+                      /*  LatLng location = new LatLng(latitude, longitude);
+                        Marker marker = mMap.addMarker(new MarkerOptions().position(location).title(slotName).snippet("Status: " + status));
+                        marker.setTag(parkingSlot);*/
+                            }
+                        }
+                }
+                if (!parkingSlotList.isEmpty()) {
+                    //  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BULGARIA_CENTER, 7));
+                    parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    recyclerView.setAdapter(parkingSlotAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(OldReservationsActivity.this, "Failed to load parking slots.", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+    }
+
 }

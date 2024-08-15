@@ -18,4 +18,5 @@
     <string name="reserve">Reserve</string>
     <string name="contact">Contact</string>
     <string name="list_of_prices">List Of Prices</string>
+    <string name="my_reservations">My Reservations</string>
 </resources>
