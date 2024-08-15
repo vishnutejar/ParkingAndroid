@@ -25,6 +25,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.parking.app.AppContants;
@@ -41,14 +43,27 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
     private ImageView img_back;
     Button bt_recommend, bt_reserve, bt_recommend_reserve;
     RatingBar ratingBar;
-    String selectedRating;
+    String selectedRating, userid, email;
     Map<String, Integer> price;
     ArrayList<Map<String, Integer>> reviews;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_parking_details);
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        // Get current user
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        userid = currentUser.getUid(); // Get user ID
+        email = currentUser.getEmail();// user email id
+
         Intent intent = getIntent();
 
         ParkingSlot parkingSlot = intent.getExtras().getParcelable("obj");
@@ -124,6 +139,8 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
                 slot.setStatus(status);
                 slot.setReviews(reviews);
                 slot.setPrices(price);
+                slot.setEmail(email);
+                slot.setUserid(userid);
                 if (selectedRating != null) {
                     slot.setSelectedRating(selectedRating);
                 } else {

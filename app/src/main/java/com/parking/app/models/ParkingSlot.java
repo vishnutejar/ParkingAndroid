@@ -21,6 +21,8 @@ public class ParkingSlot implements Parcelable {
         selectedPrice = in.readString();
         selectedRating = in.readString();
         contact = in.readInt();
+        userid = in.readString();
+        email = in.readString();
     }
 
     public static final Creator<ParkingSlot> CREATOR = new Creator<ParkingSlot>() {
@@ -53,6 +55,24 @@ public class ParkingSlot implements Parcelable {
         City = city;
     }
 
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    private String userid;
+    private String email;
     @PropertyName("City")
     private String City;
     @PropertyName("Name")
@@ -161,5 +181,7 @@ public class ParkingSlot implements Parcelable {
         parcel.writeString(selectedPrice);
         parcel.writeString(selectedRating);
         parcel.writeInt(contact);
+        parcel.writeString(userid);
+        parcel.writeString(email);
     }
 }
