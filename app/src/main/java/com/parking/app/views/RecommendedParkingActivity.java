@@ -1,5 +1,7 @@
 package com.parking.app.views;
 
+import static com.parking.app.AppContants.Recommended;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -34,63 +36,10 @@ public class RecommendedParkingActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommended_parking);
-
-        // Initialize Firebase
-        //databaseReference = FirebaseDatabase.getInstance().getReference("RecommendedParkingSlots");
         databaseReference = FirebaseDatabase.getInstance().getReference().child("MainPages").child("Pages").child("RecommendedParking").child("RecommendedParkings");
 
-        // Initialize RecyclerView
         recyclerView = findViewById(R.id.recycler_view); // Ensure this ID matches the one in XML
-        /*parkingSlotList = new ArrayList<>();
-        parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(parkingSlotAdapter);*/
-
-        //  loadRecommendedParkingSlots();
         loadParkingSlots();
-    }
-
-    List<String> listOfValues = new ArrayList<>();
-
-    private void loadRecommendedParkingSlots() {
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                parkingSlotList.clear();
-
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String value = snapshot.getValue(String.class);
-                    listOfValues.add(value);
-                    assert value != null;
-                    // loadParkingSlots("/".concat(value));
-                    /*String slotName = snapshot.child("Name").getValue(String.class);
-                    String slotStatus = snapshot.child("Status").getValue(String.class);
-                    Double latitude = snapshot.child("Latitude").getValue(Double.class);
-                    Double longitude = snapshot.child("Longitude").getValue(Double.class);
-                    Map<String, Integer> slotPrices = (Map<String, Integer>) snapshot.child("Prices").getValue();
-
-                    if (slotName != null && slotStatus != null && latitude != null && longitude != null && slotPrices != null) {
-                        ParkingSlot slot = new ParkingSlot(slotName, slotStatus, latitude, longitude, slotPrices);
-                        parkingSlotList.add(slot);
-                    }*/
-                }
-
-                //  parkingSlotAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(RecommendedParkingActivity.this, "Failed to load recommended parking slots.", Toast.LENGTH_SHORT).show();
-                Log.e("FirebaseError", "Error loading recommended parking slots: " + databaseError.getMessage());
-            }
-        });
-
-        parkingSlotList = new ArrayList<>();
-        parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(parkingSlotAdapter);
     }
 
     private void loadParkingSlots() {
@@ -103,10 +52,9 @@ public class RecommendedParkingActivity extends AppCompatActivity {
                     String status = snapshot.child("Status").getValue(String.class);
 
                     if (status != null)
-                        if (status.equals("Recommended")) {
-
-
+                        if (status.equals(Recommended)) {
                             String slotName = snapshot.child("Name").getValue(String.class);
+                            String city = snapshot.child("City").getValue(String.class);
                             Double latitude = null;
                             Double longitude = null;
                             Map<String, Integer> prices = null;
@@ -134,6 +82,7 @@ public class RecommendedParkingActivity extends AppCompatActivity {
 
                             if (slotName != null && status != null && latitude != null && longitude != null && prices != null) {
                                 ParkingSlot parkingSlot = new ParkingSlot(slotName, status, latitude, longitude, prices, reviews);
+                                parkingSlot.setCity(city);
                                 parkingSlotList.add(parkingSlot);
 
                       /*  LatLng location = new LatLng(latitude, longitude);
