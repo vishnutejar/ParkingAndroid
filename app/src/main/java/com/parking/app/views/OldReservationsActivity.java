@@ -1,5 +1,6 @@
 package com.parking.app.views;
 
+import static com.parking.app.AppContants.RecommendAndReserve;
 import static com.parking.app.AppContants.Recommended;
 import static com.parking.app.AppContants.Reserved;
 
@@ -90,8 +91,9 @@ public class OldReservationsActivity extends AppCompatActivity {
                     String status = snapshot.child("status").getValue(String.class);
 
                     if (status != null)
-                        if (status.equals(Reserved)) {
+                        if (status.equals(Reserved)|| status.equals(RecommendAndReserve)) {
                             String slotName = snapshot.child("name").getValue(String.class);
+                            Integer contact = snapshot.child("contact").getValue(Integer.class);
                             String city = snapshot.child("city").getValue(String.class);
                             String selectedPrice = snapshot.child("selectedPrice").getValue(String.class);
                             String selectedRating = snapshot.child("selectedRating").getValue(String.class);
@@ -123,6 +125,7 @@ public class OldReservationsActivity extends AppCompatActivity {
                             if (slotName != null && status != null && latitude != null && longitude != null && prices != null) {
                                 ParkingSlot parkingSlot = new ParkingSlot(slotName, status, latitude, longitude, prices, reviews);
                                 parkingSlot.setCity(city);
+                                parkingSlot.setContact(contact);
                                 parkingSlot.setValueKey(snapshot.getKey());
                                 parkingSlot.setSelectedPrice(selectedPrice);
                                 parkingSlot.setSelectedRating(selectedRating);
