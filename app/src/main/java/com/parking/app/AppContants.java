@@ -7,6 +7,8 @@ public class AppContants {
     public static String SlotLongitude = "SlotLongitude";
     public static String SlotMapPrices = "SlotMapPrices";
     public static String SlotReviews = "SlotReviews";
+    public static String Available = "Available";
     public static String Recommended = "Recommended";
     public static String Reserved = "Reserved";
+    public static String RecommendAndReserve = "RecommendAndReserve";
 }

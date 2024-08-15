@@ -20,6 +20,7 @@ public class ParkingSlot implements Parcelable {
         Longitude = in.readDouble();
         selectedPrice = in.readString();
         selectedRating = in.readString();
+        contact = in.readInt();
     }
 
     public static final Creator<ParkingSlot> CREATOR = new Creator<ParkingSlot>() {
@@ -61,6 +62,16 @@ public class ParkingSlot implements Parcelable {
     private double Latitude;
     @PropertyName("Longitude")
     private double Longitude;
+
+    public int getContact() {
+        return contact;
+    }
+
+    public void setContact(int contact) {
+        this.contact = contact;
+    }
+
+    private int contact;
 
     public void setPrices(Map<String, Integer> prices) {
         this.Prices = prices;
@@ -149,5 +160,6 @@ public class ParkingSlot implements Parcelable {
         parcel.writeDouble(Longitude);
         parcel.writeString(selectedPrice);
         parcel.writeString(selectedRating);
+        parcel.writeInt(contact);
     }
 }

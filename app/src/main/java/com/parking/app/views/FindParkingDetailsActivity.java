@@ -1,5 +1,6 @@
 package com.parking.app.views;
 
+import static com.parking.app.AppContants.RecommendAndReserve;
 import static com.parking.app.AppContants.Recommended;
 import static com.parking.app.AppContants.Reserved;
 import static com.parking.app.AppContants.SlotReviews;
@@ -36,9 +37,9 @@ import java.util.Map;
 public class FindParkingDetailsActivity extends AppCompatActivity {
 
     private RadioGroup priceRadioGroup;
-    private TextView txt_title, txt_city;
+    private TextView txt_title, txt_city, txt_contacts;
     private ImageView img_back;
-    Button bt_recommend, bt_reserve, bt_contact;
+    Button bt_recommend, bt_reserve, bt_recommend_reserve;
     RatingBar ratingBar;
     String selectedRating;
     Map<String, Integer> price;
@@ -54,17 +55,19 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
         price = (Map<String, Integer>) intent.getExtras().getSerializable(AppContants.SlotMapPrices);
         reviews = (ArrayList<Map<String, Integer>>) intent.getExtras().getSerializable(SlotReviews);
 
+        txt_contacts = findViewById(R.id.txt_contacts);
         priceRadioGroup = findViewById(R.id.priceRadioGroup);
         txt_title = findViewById(R.id.txt_title);
+        bt_recommend_reserve = findViewById(R.id.bt_recommend_reserve);
         txt_city = findViewById(R.id.txt_city);
         img_back = findViewById(R.id.img_back);
         ratingBar = findViewById(R.id.ratingBar);
         bt_recommend = findViewById(R.id.bt_recommend);
         bt_reserve = findViewById(R.id.bt_reserve);
-        bt_contact = findViewById(R.id.bt_contact);
+        // bt_contact = findViewById(R.id.bt_contact);
         // Add radio buttons dynamically
         Map<String, Integer> pricesMap = price;
-
+        txt_contacts.setText("Contact :" + parkingSlot.getContact());
         if (pricesMap != null) {
             for (Map.Entry<String, Integer> entry : pricesMap.entrySet()) {
                 RadioButton radioButton = new RadioButton(this);
@@ -87,6 +90,11 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
         });
         bt_reserve.setOnClickListener(view -> {
             handlePriceSelection(priceRadioGroup, parkingSlot, Reserved);
+            onBackPressed();
+
+        });
+        bt_recommend_reserve.setOnClickListener(view -> {
+            handlePriceSelection(priceRadioGroup, parkingSlot, RecommendAndReserve);
             onBackPressed();
 
         });

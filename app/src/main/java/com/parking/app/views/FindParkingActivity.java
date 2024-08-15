@@ -107,42 +107,46 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
                 mMap.clear();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String valueKey = snapshot.getKey();
-                    String City = snapshot.child("city").getValue(String.class);
-                    String slotName = snapshot.child("name").getValue(String.class);
-                    String status = snapshot.child("status").getValue(String.class);
-                    ArrayList<Map<String, Integer>> reviews = (ArrayList<Map<String, Integer>>) snapshot.child("reviews").getValue();
-                    Double latitude = null;
-                    Double longitude = null;
-                    Map<String, Integer> prices = null;
+                    if (snapshot.child("status").getValue(String.class) != null && snapshot.child("status").getValue(String.class).equals(AppContants.Available)) {
+                        String valueKey = snapshot.getKey();
+                        String City = snapshot.child("city").getValue(String.class);
+                        Integer contact = snapshot.child("contact").getValue(Integer.class);
+                        String slotName = snapshot.child("name").getValue(String.class);
+                        String status = snapshot.child("status").getValue(String.class);
+                        ArrayList<Map<String, Integer>> reviews = (ArrayList<Map<String, Integer>>) snapshot.child("reviews").getValue();
+                        Double latitude = null;
+                        Double longitude = null;
+                        Map<String, Integer> prices = null;
 
-                    try {
-                        latitude = snapshot.child("latitude").getValue(Double.class);
-                        longitude = snapshot.child("longitude").getValue(Double.class);
-                    } catch (Exception e) {
-                        String latStr = snapshot.child("latitude").getValue(String.class);
-                        String lonStr = snapshot.child("longitude").getValue(String.class);
+                        try {
+                            latitude = snapshot.child("latitude").getValue(Double.class);
+                            longitude = snapshot.child("longitude").getValue(Double.class);
+                        } catch (Exception e) {
+                            String latStr = snapshot.child("latitude").getValue(String.class);
+                            String lonStr = snapshot.child("longitude").getValue(String.class);
 
-                        if (latStr != null && lonStr != null) {
-                            try {
-                                latitude = Double.parseDouble(latStr);
-                                longitude = Double.parseDouble(lonStr);
-                            } catch (NumberFormatException ex) {
-                                Toast.makeText(FindParkingActivity.this, "Invalid latitude/longitude for slot: " + slotName, Toast.LENGTH_SHORT).show();
+                            if (latStr != null && lonStr != null) {
+                                try {
+                                    latitude = Double.parseDouble(latStr);
+                                    longitude = Double.parseDouble(lonStr);
+                                } catch (NumberFormatException ex) {
+                                    Toast.makeText(FindParkingActivity.this, "Invalid latitude/longitude for slot: " + slotName, Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
-                    }
 
-                    prices = (Map<String, Integer>) snapshot.child("prices").getValue();
+                        prices = (Map<String, Integer>) snapshot.child("prices").getValue();
 
-                    if (slotName != null && status != null && latitude != null && longitude != null && prices != null) {
-                        ParkingSlot parkingSlot = new ParkingSlot(slotName, status, latitude, longitude, prices, reviews);
-                        parkingSlot.setCity(City);
-                        parkingSlot.setValueKey(valueKey);
-                        parkingSlotList.add(parkingSlot);
-                        LatLng location = new LatLng(latitude, longitude);
-                        Marker marker = mMap.addMarker(new MarkerOptions().position(location).title(slotName).snippet("Status: " + status));
-                        marker.setTag(parkingSlot);
+                        if (slotName != null && status != null && latitude != null && longitude != null && prices != null) {
+                            ParkingSlot parkingSlot = new ParkingSlot(slotName, status, latitude, longitude, prices, reviews);
+                            parkingSlot.setCity(City);
+                            parkingSlot.setValueKey(valueKey);
+                            parkingSlot.setContact(contact);
+                            parkingSlotList.add(parkingSlot);
+                            LatLng location = new LatLng(latitude, longitude);
+                            Marker marker = mMap.addMarker(new MarkerOptions().position(location).title(slotName).snippet("Status: " + status));
+                            marker.setTag(parkingSlot);
+                        }
                     }
                 }
 
