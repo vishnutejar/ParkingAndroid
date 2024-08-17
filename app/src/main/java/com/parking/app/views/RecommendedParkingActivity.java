@@ -28,7 +28,6 @@ import java.util.Map;
 
 public class RecommendedParkingActivity extends AppCompatActivity {
 
-    private DatabaseReference databaseReference;
     private RecyclerView recyclerView;
     private ParkingSlotAdapter parkingSlotAdapter;
     private List<ParkingSlot> parkingSlotList = new ArrayList<>();
@@ -37,8 +36,6 @@ public class RecommendedParkingActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommended_parking);
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("MainPages").child("Pages").child("RecommendedParking").child("RecommendedParkings");
-
         recyclerView = findViewById(R.id.recycler_view); // Ensure this ID matches the one in XML
         loadParkingSlots();
     }
@@ -92,16 +89,11 @@ public class RecommendedParkingActivity extends AppCompatActivity {
                                 parkingSlot.setSelectedPrice(selectedPrice);
                                 parkingSlot.setSelectedRating(selectedRating);
                                 parkingSlotList.add(parkingSlot);
-
-                      /*  LatLng location = new LatLng(latitude, longitude);
-                        Marker marker = mMap.addMarker(new MarkerOptions().position(location).title(slotName).snippet("Status: " + status));
-                        marker.setTag(parkingSlot);*/
                             }
                         }
                 }
                 if (!parkingSlotList.isEmpty()) {
-                    //  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BULGARIA_CENTER, 7));
-                    parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList);
+                    parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList,Recommended);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                     recyclerView.setAdapter(parkingSlotAdapter);
                 }

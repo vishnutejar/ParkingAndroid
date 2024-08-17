@@ -48,18 +48,18 @@
                     android:id="@+id/txt_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:fontFamily="sans-serif-black"
                     android:text="4.0"
-                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/slot_image" />
 
                 <ImageView
-                    android:src="@android:drawable/star_big_on"
                     android:layout_width="20dp"
-                    android:layout_height="20dp"/>
+                    android:layout_height="20dp"
+                    android:src="@android:drawable/star_big_on" />
             </LinearLayout>
 
             <TextView
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="Latitude"
+                android:text="price"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_city" />
@@ -101,10 +101,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
-                android:text="Longitude"
+                android:text="Contact"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_prise" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bt_recommend_reserve"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recommend"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 

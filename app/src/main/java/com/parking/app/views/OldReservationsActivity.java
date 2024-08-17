@@ -59,7 +59,7 @@ public class OldReservationsActivity extends AppCompatActivity {
         // Initialize RecyclerView
         recyclerView = findViewById(R.id.recycler_view); // Ensure this ID matches the one in XML
         parkingSlotList = new ArrayList<>();
-        parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList);
+        parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList, Recommended);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(parkingSlotAdapter);
@@ -156,7 +156,7 @@ public class OldReservationsActivity extends AppCompatActivity {
                 }
                 if (!parkingSlotList.isEmpty()) {
                     //  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BULGARIA_CENTER, 7));
-                    parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList);
+                    parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList, Reserved);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                     recyclerView.setAdapter(parkingSlotAdapter);
                 }
