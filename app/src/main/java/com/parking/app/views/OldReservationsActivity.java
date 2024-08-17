@@ -5,6 +5,7 @@ import static com.parking.app.AppContants.Recommended;
 import static com.parking.app.AppContants.Reserved;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,13 +23,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.parking.app.adapters.ParkingSlotAdapter;
 import com.parking.app.R;
+import com.parking.app.adapters.interfaces.OnItemActionSelected;
 import com.parking.app.models.ParkingSlot;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class OldReservationsActivity extends AppCompatActivity {
+public class OldReservationsActivity extends AppCompatActivity implements OnItemActionSelected {
 
     private DatabaseReference databaseReference;
     private RecyclerView recyclerView;
@@ -59,7 +61,7 @@ public class OldReservationsActivity extends AppCompatActivity {
         // Initialize RecyclerView
         recyclerView = findViewById(R.id.recycler_view); // Ensure this ID matches the one in XML
         parkingSlotList = new ArrayList<>();
-        parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList, Recommended);
+        parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList, Recommended, OldReservationsActivity.this::itemActionSelected);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(parkingSlotAdapter);
@@ -110,6 +112,7 @@ public class OldReservationsActivity extends AppCompatActivity {
                         if (email != null && auth_email.equals(email))
                             if (status.equals(Reserved) || status.equals(RecommendAndReserve)) {
                                 String slotName = snapshot.child("name").getValue(String.class);
+                                String parkingimage = snapshot.child("parkingimage").getValue(String.class);
                                 Integer contact = snapshot.child("contact").getValue(Integer.class);
                                 String city = snapshot.child("city").getValue(String.class);
                                 String selectedPrice = snapshot.child("selectedPrice").getValue(String.class);
@@ -144,6 +147,7 @@ public class OldReservationsActivity extends AppCompatActivity {
                                     parkingSlot.setCity(city);
                                     parkingSlot.setContact(contact);
                                     parkingSlot.setValueKey(snapshot.getKey());
+                                    parkingSlot.setParkingimage(parkingimage);
                                     parkingSlot.setSelectedPrice(selectedPrice);
                                     parkingSlot.setSelectedRating(selectedRating);
                                     parkingSlotList.add(parkingSlot);
@@ -156,7 +160,7 @@ public class OldReservationsActivity extends AppCompatActivity {
                 }
                 if (!parkingSlotList.isEmpty()) {
                     //  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BULGARIA_CENTER, 7));
-                    parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList, Reserved);
+                    parkingSlotAdapter = new ParkingSlotAdapter(parkingSlotList, Reserved, OldReservationsActivity.this::itemActionSelected);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                     recyclerView.setAdapter(parkingSlotAdapter);
                 }
@@ -171,4 +175,38 @@ public class OldReservationsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void itemActionSelected(ParkingSlot slot, String action) {
+        Log.d("RecommendedParkingActivity", "Item action selected: " +slot);
+        handleaction(slot,Recommended);
+    }
+    private void handleaction(ParkingSlot slot, String status) {
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        // Get current user
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        userid = currentUser.getUid(); // Get user ID
+        auth_email = currentUser.getEmail();// user email id
+
+        slot.setUserid(userid);
+        slot.setEmail(auth_email);
+        slot.setStatus(status);
+        // Update the slot status and selected price in Firebase
+        DatabaseReference slotRef = FirebaseDatabase.getInstance().getReference().child("ParkingSlots")
+                .child(slot.getValueKey());
+        slotRef.setValue(slot).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(this, status+" Slot value submitted successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Failed to submit feedback", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
 }

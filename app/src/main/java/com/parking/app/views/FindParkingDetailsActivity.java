@@ -9,6 +9,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -40,10 +41,10 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
 
     private RadioGroup priceRadioGroup;
     private TextView txt_title, txt_city, txt_contacts;
-    private ImageView img_back;
+    private ImageView img_back,img_parking;
     Button bt_recommend, bt_reserve, bt_recommend_reserve;
     RatingBar ratingBar;
-    String selectedRating, userid, email;
+    String selectedRating, userid, email, parkingimage;
     Map<String, Integer> price;
     ArrayList<Map<String, Integer>> reviews;
     private FirebaseAuth firebaseAuth;
@@ -67,9 +68,13 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         ParkingSlot parkingSlot = intent.getExtras().getParcelable("obj");
+         parkingimage = intent.getExtras().getString(AppContants.parkingImage);
+        int resId = getResources().getIdentifier(parkingimage,"drawable",this.getPackageName());
+        Drawable d = this.getResources().getDrawable(resId);
         price = (Map<String, Integer>) intent.getExtras().getSerializable(AppContants.SlotMapPrices);
         reviews = (ArrayList<Map<String, Integer>>) intent.getExtras().getSerializable(SlotReviews);
 
+        img_parking = findViewById(R.id.img_parking);
         txt_contacts = findViewById(R.id.txt_contacts);
         priceRadioGroup = findViewById(R.id.priceRadioGroup);
         txt_title = findViewById(R.id.txt_title);
@@ -79,9 +84,13 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
         ratingBar = findViewById(R.id.ratingBar);
         bt_recommend = findViewById(R.id.bt_recommend);
         bt_reserve = findViewById(R.id.bt_reserve);
+
+        img_parking.setImageDrawable(d);
+
         // bt_contact = findViewById(R.id.bt_contact);
         // Add radio buttons dynamically
         Map<String, Integer> pricesMap = price;
+
         txt_contacts.setText("Contact :" + parkingSlot.getContact());
         if (pricesMap != null) {
             for (Map.Entry<String, Integer> entry : pricesMap.entrySet()) {
@@ -101,17 +110,12 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
         });
         bt_recommend.setOnClickListener(view -> {
             handlePriceSelection(priceRadioGroup, parkingSlot, Recommended);
-            onBackPressed();
         });
         bt_reserve.setOnClickListener(view -> {
             handlePriceSelection(priceRadioGroup, parkingSlot, Reserved);
-            onBackPressed();
-
         });
         bt_recommend_reserve.setOnClickListener(view -> {
             handlePriceSelection(priceRadioGroup, parkingSlot, RecommendAndReserve);
-            onBackPressed();
-
         });
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -141,6 +145,7 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
                 slot.setPrices(price);
                 slot.setEmail(email);
                 slot.setUserid(userid);
+                slot.setParkingimage(parkingimage);
                 if (selectedRating != null) {
                     slot.setSelectedRating(selectedRating);
                 } else {
@@ -162,6 +167,7 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
                 // Create notification for the action
                 createNotification("You have " + status.toLowerCase() + " the parking slot: " + slot.getName() + " at " + selectedPrice);
                 Toast.makeText(this, "Parking slot " + status.toLowerCase() + " successfully!", Toast.LENGTH_SHORT).show();
+                onBackPressed();
             } else {
                 Toast.makeText(this, "Error finding selected price option.", Toast.LENGTH_SHORT).show();
             }

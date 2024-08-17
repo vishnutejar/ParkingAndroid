@@ -83,6 +83,16 @@ public class ParkingSlot implements Parcelable {
     @PropertyName("Longitude")
     private double Longitude;
 
+    public String getParkingimage() {
+        return parkingimage;
+    }
+
+    public void setParkingimage(String parkingimage) {
+        this.parkingimage = parkingimage;
+    }
+
+    private String parkingimage;
+
     public int getContact() {
         return contact;
     }

@@ -31,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.parking.app.AppContants;
 import com.parking.app.adapters.ParkingSlotAdapter;
 import com.parking.app.R;
+import com.parking.app.adapters.interfaces.OnItemActionSelected;
 import com.parking.app.models.ParkingSlot;
 
 import java.io.Serializable;
@@ -38,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class FindParkingActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class FindParkingActivity extends AppCompatActivity implements OnMapReadyCallback, OnItemActionSelected {
 
     private RecyclerView recyclerView;
     private ParkingSlotAdapter adapter;
@@ -61,7 +62,7 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         parkingSlotList = new ArrayList<>();
-        adapter = new ParkingSlotAdapter(parkingSlotList, "");
+        adapter = new ParkingSlotAdapter(parkingSlotList, "", this);
         recyclerView.setAdapter(adapter);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
@@ -92,11 +93,12 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 parkingSlotList.clear();
                 mMap.clear();
-
+                int count = 1;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     if (snapshot.child("status").getValue(String.class) != null && snapshot.child("status").getValue(String.class).equals(AppContants.Available)) {
                         String valueKey = snapshot.getKey();
                         String City = snapshot.child("city").getValue(String.class);
+                        String parkingimage = snapshot.child("parkingimage").getValue(String.class);
                         Integer contact = snapshot.child("contact").getValue(Integer.class);
                         String slotName = snapshot.child("name").getValue(String.class);
                         String status = snapshot.child("status").getValue(String.class);
@@ -129,6 +131,7 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
                             parkingSlot.setCity(City);
                             parkingSlot.setValueKey(valueKey);
                             parkingSlot.setContact(contact);
+                            parkingSlot.setParkingimage(parkingimage);
                             parkingSlotList.add(parkingSlot);
                             LatLng location = new LatLng(latitude, longitude);
                             Marker marker = mMap.addMarker(new MarkerOptions().position(location).title(slotName).snippet("Status: " + status));
@@ -226,7 +229,8 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
                     Intent intent = new Intent(FindParkingActivity.this, FindParkingDetailsActivity.class);
                     intent.putExtra("obj", slot);
                     intent.putExtra(AppContants.SlotMapPrices, (Serializable) slot.getPrices());
-                    intent.putExtra(AppContants.SlotReviews, (Serializable) slot.getReviews());
+                    intent.putExtra(AppContants.SlotReviews, slot.getReviews());
+                    intent.putExtra(AppContants.parkingImage, slot.getParkingimage().toString());
                     startActivity(intent);
                     return true;
                 }
@@ -235,5 +239,10 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
         });
 
         loadParkingSlots();
+    }
+
+    @Override
+    public void itemActionSelected(ParkingSlot slot, String action) {
+
     }
 }

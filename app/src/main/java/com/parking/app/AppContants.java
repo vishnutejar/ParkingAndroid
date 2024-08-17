@@ -1,6 +1,7 @@
 package com.parking.app;
 
 public class AppContants {
+    public static String parkingImage = "parkingImage";
     public static String SlotName = "SlotName";
     public static String SlotStatus = "SlotStatus";
     public static String SlotLatitude = "SlotLatitude";
