@@ -25,6 +25,7 @@ import com.parking.app.adapters.ParkingSlotAdapter;
 import com.parking.app.R;
 import com.parking.app.adapters.interfaces.OnItemActionSelected;
 import com.parking.app.models.ParkingSlot;
+import com.parking.app.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,11 @@ public class RecommendedParkingActivity extends AppCompatActivity implements OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommended_parking);
         recyclerView = findViewById(R.id.recycler_view); // Ensure this ID matches the one in XML
-        loadParkingSlots();
+       if (AppUtils.isInternetAvailable(this)) {
+           loadParkingSlots();
+       }else {
+           AppUtils.ToastLocal(R.string.no_internet_connection, this);
+       }
     }
 
     private void loadParkingSlots() {

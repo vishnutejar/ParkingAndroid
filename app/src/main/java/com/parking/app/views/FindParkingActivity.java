@@ -33,6 +33,7 @@ import com.parking.app.adapters.ParkingSlotAdapter;
 import com.parking.app.R;
 import com.parking.app.adapters.interfaces.OnItemActionSelected;
 import com.parking.app.models.ParkingSlot;
+import com.parking.app.utils.AppUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -82,7 +83,11 @@ public class FindParkingActivity extends AppCompatActivity implements OnMapReady
             }
         });
 
-        loadParkingSlots(); // Load all parking slots initially
+        if (AppUtils.isInternetAvailable(this)) {
+            loadParkingSlots(); // Load all parking slots initially
+        }else {
+            AppUtils.ToastLocal(R.string.no_internet_connection, this);
+        }
     }
 
     private void loadParkingSlots() {

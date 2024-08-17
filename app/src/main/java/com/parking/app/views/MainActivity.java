@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.parking.app.R;
+import com.parking.app.utils.AppUtils;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -133,8 +134,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_old_reservations) {
             startActivity(new Intent(MainActivity.this, OldReservationsActivity.class));
         } else if (id == R.id.nav_logout) {
-            FirebaseAuth.getInstance().signOut();
-            sendToLoginActivity();
+            if (AppUtils.isInternetAvailable(MainActivity.this)) {
+                FirebaseAuth.getInstance().signOut();
+                sendToLoginActivity();
+            }else {
+                AppUtils.ToastLocal(R.string.no_internet_connection, MainActivity.this);
+            }
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

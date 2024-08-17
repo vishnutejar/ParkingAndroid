@@ -25,6 +25,7 @@ import com.parking.app.adapters.ParkingSlotAdapter;
 import com.parking.app.R;
 import com.parking.app.adapters.interfaces.OnItemActionSelected;
 import com.parking.app.models.ParkingSlot;
+import com.parking.app.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,11 @@ public class OldReservationsActivity extends AppCompatActivity implements OnItem
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(parkingSlotAdapter);
 
-        loadReservedSlots();
+        if (AppUtils.isInternetAvailable(this)) {
+            loadReservedSlots();
+        } else {
+            AppUtils.ToastLocal(R.string.no_internet_connection, this);
+        }
     }
 
     /*
@@ -177,9 +182,10 @@ public class OldReservationsActivity extends AppCompatActivity implements OnItem
 
     @Override
     public void itemActionSelected(ParkingSlot slot, String action) {
-        Log.d("RecommendedParkingActivity", "Item action selected: " +slot);
-        handleaction(slot,Recommended);
+        Log.d("RecommendedParkingActivity", "Item action selected: " + slot);
+        handleaction(slot, Recommended);
     }
+
     private void handleaction(ParkingSlot slot, String status) {
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -201,7 +207,7 @@ public class OldReservationsActivity extends AppCompatActivity implements OnItem
                 .child(slot.getValueKey());
         slotRef.setValue(slot).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(this, status+" Slot value submitted successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, status + " Slot value submitted successfully", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Failed to submit feedback", Toast.LENGTH_SHORT).show();
             }

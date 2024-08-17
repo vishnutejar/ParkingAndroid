@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.PropertyName;
 import com.parking.app.R;
 import com.parking.app.models.Feedback;
+import com.parking.app.utils.AppUtils;
 
 public class FeedbackActivity extends AppCompatActivity {
 
@@ -52,7 +53,11 @@ public class FeedbackActivity extends AppCompatActivity {
         submitFeedbackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitFeedback();
+                if (AppUtils.isInternetAvailable(getApplicationContext())) {
+                    submitFeedback();
+                } else {
+                    AppUtils.ToastLocal(R.string.no_internet_connection, FeedbackActivity.this);
+                }
             }
         });
     }

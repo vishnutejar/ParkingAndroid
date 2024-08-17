@@ -20,4 +20,5 @@
     <string name="list_of_prices">List Of Prices</string>
     <string name="my_reservations">My Reservations</string>
     <string name="recommend_reserve">Recommend/Reserve</string>
+    <string name="no_internet_connection">No internet connection</string>
 </resources>

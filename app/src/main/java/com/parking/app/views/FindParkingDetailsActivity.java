@@ -33,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.parking.app.AppContants;
 import com.parking.app.R;
 import com.parking.app.models.ParkingSlot;
+import com.parking.app.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
 
     private RadioGroup priceRadioGroup;
     private TextView txt_title, txt_city, txt_contacts;
-    private ImageView img_back,img_parking;
+    private ImageView img_back, img_parking;
     Button bt_recommend, bt_reserve, bt_recommend_reserve;
     RatingBar ratingBar;
     String selectedRating, userid, email, parkingimage;
@@ -68,8 +69,8 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         ParkingSlot parkingSlot = intent.getExtras().getParcelable("obj");
-         parkingimage = intent.getExtras().getString(AppContants.parkingImage);
-        int resId = getResources().getIdentifier(parkingimage,"drawable",this.getPackageName());
+        parkingimage = intent.getExtras().getString(AppContants.parkingImage);
+        int resId = getResources().getIdentifier(parkingimage, "drawable", this.getPackageName());
         Drawable d = this.getResources().getDrawable(resId);
         price = (Map<String, Integer>) intent.getExtras().getSerializable(AppContants.SlotMapPrices);
         reviews = (ArrayList<Map<String, Integer>>) intent.getExtras().getSerializable(SlotReviews);
@@ -127,52 +128,56 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
 
 
     private void handlePriceSelection(RadioGroup priceRadioGroup, ParkingSlot slot, String status) {
-        // Check if the slot is already recommended or reserved
-        if (Recommended.equals(slot.getStatus()) || Reserved.equals(slot.getStatus())) {
-            Toast.makeText(this, "This slot is already " + slot.getStatus().toLowerCase(), Toast.LENGTH_SHORT).show();
-            return; // Prevent any further action
-        }
+        if (AppUtils.isInternetAvailable(this)) {
+            // Check if the slot is already recommended or reserved
+            if (Recommended.equals(slot.getStatus()) || Reserved.equals(slot.getStatus())) {
+                Toast.makeText(this, "This slot is already " + slot.getStatus().toLowerCase(), Toast.LENGTH_SHORT).show();
+                return; // Prevent any further action
+            }
 
-        int selectedId = priceRadioGroup.getCheckedRadioButtonId();
-        if (selectedId != -1) {
-            // Find the selected RadioButton by its ID
-            RadioButton selectedRadioButton = priceRadioGroup.findViewById(selectedId);
-            if (selectedRadioButton != null) {
-                String selectedPrice = selectedRadioButton.getText().toString();
-                slot.setSelectedPrice(selectedPrice);
-                slot.setStatus(status);
-                slot.setReviews(reviews);
-                slot.setPrices(price);
-                slot.setEmail(email);
-                slot.setUserid(userid);
-                slot.setParkingimage(parkingimage);
-                if (selectedRating != null) {
-                    slot.setSelectedRating(selectedRating);
-                } else {
-                    slot.setSelectedRating("0");
-                }
-                // Update the slot status and selected price in Firebase
-                DatabaseReference slotRef = FirebaseDatabase.getInstance().getReference().child("ParkingSlots")
-                        .child(slot.getValueKey());
-                slotRef.setValue(slot).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(FindParkingDetailsActivity.this, " Slot value submitted successfully", Toast.LENGTH_SHORT).show();
-                        finish(); // Close activity
+            int selectedId = priceRadioGroup.getCheckedRadioButtonId();
+            if (selectedId != -1) {
+                // Find the selected RadioButton by its ID
+                RadioButton selectedRadioButton = priceRadioGroup.findViewById(selectedId);
+                if (selectedRadioButton != null) {
+                    String selectedPrice = selectedRadioButton.getText().toString();
+                    slot.setSelectedPrice(selectedPrice);
+                    slot.setStatus(status);
+                    slot.setReviews(reviews);
+                    slot.setPrices(price);
+                    slot.setEmail(email);
+                    slot.setUserid(userid);
+                    slot.setParkingimage(parkingimage);
+                    if (selectedRating != null) {
+                        slot.setSelectedRating(selectedRating);
                     } else {
-                        Toast.makeText(FindParkingDetailsActivity.this, "Failed to submit feedback", Toast.LENGTH_SHORT).show();
+                        slot.setSelectedRating("0");
                     }
-                });
-                // slotRef.child("SelectedPrice").setValue(selectedPrice);
+                    // Update the slot status and selected price in Firebase
+                    DatabaseReference slotRef = FirebaseDatabase.getInstance().getReference().child("ParkingSlots")
+                            .child(slot.getValueKey());
+                    slotRef.setValue(slot).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(FindParkingDetailsActivity.this, " Slot value submitted successfully", Toast.LENGTH_SHORT).show();
+                            finish(); // Close activity
+                        } else {
+                            Toast.makeText(FindParkingDetailsActivity.this, "Failed to submit feedback", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    // slotRef.child("SelectedPrice").setValue(selectedPrice);
 
-                // Create notification for the action
-                createNotification("You have " + status.toLowerCase() + " the parking slot: " + slot.getName() + " at " + selectedPrice);
-                Toast.makeText(this, "Parking slot " + status.toLowerCase() + " successfully!", Toast.LENGTH_SHORT).show();
-                onBackPressed();
+                    // Create notification for the action
+                    createNotification("You have " + status.toLowerCase() + " the parking slot: " + slot.getName() + " at " + selectedPrice);
+                    Toast.makeText(this, "Parking slot " + status.toLowerCase() + " successfully!", Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                } else {
+                    Toast.makeText(this, "Error finding selected price option.", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(this, "Error finding selected price option.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please select a price", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "Please select a price", Toast.LENGTH_SHORT).show();
+            AppUtils.ToastLocal(R.string.no_internet_connection, this);
         }
 
     }
