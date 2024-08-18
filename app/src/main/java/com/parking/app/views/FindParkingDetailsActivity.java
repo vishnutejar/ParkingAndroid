@@ -1,5 +1,7 @@
 package com.parking.app.views;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CALL_PHONE;
 import static com.parking.app.AppContants.RecommendAndReserve;
 import static com.parking.app.AppContants.Recommended;
 import static com.parking.app.AppContants.Reserved;
@@ -10,6 +12,7 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -93,6 +96,13 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
         Map<String, Integer> pricesMap = price;
 
         txt_contacts.setText("Contact :" + parkingSlot.getContact());
+        txt_contacts.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                callPhoneIntent(parkingSlot.getContact() + "");
+            }
+        });
         if (pricesMap != null) {
             for (Map.Entry<String, Integer> entry : pricesMap.entrySet()) {
                 RadioButton radioButton = new RadioButton(this);
@@ -208,6 +218,26 @@ public class FindParkingDetailsActivity extends AppCompatActivity {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    private void callPhoneIntent(String phoneNumber) {
+        try {
+            String mobileNo = phoneNumber;
+            String uri = "tel:" + mobileNo.trim();
+            Intent intent = new Intent(Intent.ACTION_CALL);
+            intent.setData(Uri.parse(uri));
+            startActivity(intent);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            requestPermission();
+        }
+
+    }
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(this, new String[]{CALL_PHONE}, 1002);
+
     }
 
 

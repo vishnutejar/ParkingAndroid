@@ -1,6 +1,7 @@
 package com.parking.app.views;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CALL_PHONE;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -172,12 +173,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION);
+        int result_callPhone = ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE);
 
-        return result == PackageManager.PERMISSION_GRANTED;
+        return result == PackageManager.PERMISSION_GRANTED && result_callPhone == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0) {
@@ -185,16 +188,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     boolean locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
 
                     if (locationAccepted)
-                        Snackbar.make(this.getWindow().getDecorView().getRootView(), "Permission Granted, Now you can access location data and camera.", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(this.getWindow().getDecorView().getRootView(), "Permission Granted, Now you can access location data and call phone number.", Snackbar.LENGTH_LONG).show();
                     else {
-                        Snackbar.make(this.getWindow().getDecorView().getRootView(), "Permission Denied, You cannot access location data and camera.", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(this.getWindow().getDecorView().getRootView(), "Permission Denied, You cannot access location data and call phone number.", Snackbar.LENGTH_LONG).show();
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
                                 showMessageOKCancel("You need to allow access to both the permissions",
                                         (dialog, which) -> {
                                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                requestPermissions(new String[]{ACCESS_FINE_LOCATION},
+                                                requestPermissions(new String[]{ACCESS_FINE_LOCATION, CALL_PHONE},
                                                         PERMISSION_REQUEST_CODE);
                                             }
                                         });
@@ -212,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void requestPermission() {
 
-        ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
+        ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, CALL_PHONE}, PERMISSION_REQUEST_CODE);
 
     }
 
